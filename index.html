@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Something...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            text-align: center;
+            background-color: #ffebf1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff4d89;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #ff3385;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="mainTitle">君は僕を好き？</h1>
+        <button id="likeBtn" class="btn">好きだよ</button>
+        <button id="dislikeBtn" class="btn">好きじゃない</button>
+    </div>
+
+    <script>
+        let dislikeClickCount = 0;
+
+        document.getElementById('dislikeBtn').addEventListener('click', function() {
+            dislikeClickCount++;
+            const mainTitle = document.getElementById('mainTitle');
+
+            if (dislikeClickCount === 1) {
+                mainTitle.textContent = 'ほんとうに？';
+            } else if (dislikeClickCount === 2) {
+                mainTitle.textContent = 'もう一度考えてみない？';
+            } else if (dislikeClickCount === 3) {
+                mainTitle.textContent = 'もう「好きじゃない」のボタンを消すよ';
+            } else if (dislikeClickCount === 4) {
+                mainTitle.textContent = 'これがさいごチャンスだよ';
+                document.getElementById('dislikeBtn').style.display = 'none';
+            }
+        });
+
+        document.getElementById('likeBtn').addEventListener('click', function() {
+            document.querySelector('.container').innerHTML = '<h1>僕も好きだよ</h1>';
+        });
+    </script>
+</body>
+</html>
