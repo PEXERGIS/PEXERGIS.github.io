@@ -45,11 +45,9 @@
 
     <script>
         let dislikeClickCount = 0;
-
         document.getElementById('dislikeBtn').addEventListener('click', function() {
             dislikeClickCount++;
             const mainTitle = document.getElementById('mainTitle');
-
             if (dislikeClickCount === 1) {
                 mainTitle.textContent = 'ほんとうに？';
             } else if (dislikeClickCount === 2) {
@@ -61,9 +59,23 @@
                 document.getElementById('dislikeBtn').style.display = 'none';
             }
         });
-
+        let likeClickCount = 0;
         document.getElementById('likeBtn').addEventListener('click', function() {
-            document.querySelector('.container').innerHTML = '<h1>僕も好きだよ　\nこんなことをするのは初めてだな…</h1>';
+          likeClickCount++;
+          const mainTitle = document.getElementById('mainTitle');
+          if  (likeClickCount === 1) 
+          {
+            mainTitle.textContent = '僕も好きだよ';
+            document.getElementById('dislikeBtn').style.display = 'none';
+            document.getElementById('likeBtn').innerText = '次';
+          } else if (likeClickCount === 2 ) {
+            mainTitle.textContent = 'こんなことをするのは初めてだな…';
+          } else if (likeClickCount === 3 ) {
+            mainTitle.textContent = '今年のバレンタインデーは最高だよ';
+          } else if (likeClickCount === 4 ) {
+            mainTitle.textContent = 'ありがとうね(⁠≧⁠▽⁠≦⁠)';
+            document.getElementById('likeBtn').style.display = 'none';
+          }
         });
     </script>
 </body>
