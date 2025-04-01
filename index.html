@@ -1,85 +1,62 @@
-<!DOCTYPE html>
-<html lang="ja">
+<!DOCTYPE html><html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta property="og:image" content="mypicture.png">
-    <meta property="og:description" content="くーちゃんのための創作">
     <link rel="icon" href="mypicture.png" type="image/png">
-    <title>サムのサイト</title>
+    <meta property="og:description" content="คิดไม่ออก">
+    <title>กดครบ 10,000 รับ 100 ทรู</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: relative;
+            width: 100vw;
             height: 100vh;
-            margin: 0;
-            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .container {
-            text-align: center;
-            background-color: #ffebf1;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .btn {
-            margin-top: 10px;
+        button {
+            position: absolute;
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #ff4d89;
-            color: white;
+            cursor: pointer;
+            background-color: #B6FFB1;
+            color: black;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #ff3385;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="mainTitle">君は僕を好き？</h1>
-        <button id="likeBtn" class="btn">好きだよ</button>
-        <button id="dislikeBtn" class="btn">好きじゃない</button>
-    </div>
+    <a id="mainTitle" href="https://youtu.be/0GeQVtZ6Rd4?si=Cc8mPzDZC72bjXmy" style="            padding: 10px 20px; font-size: 50px;"></a>
+    <button id="randomBtn">ปุ่มอยู่นี่</button>
+    <b id="counter" style="font-size: 60px;"></b><script>
+    let count = 0;
+    const button = document.getElementById("randomBtn");
+    const counter = document.getElementById("counter");
 
-    <script>
-        let dislikeClickCount = 0;
-        document.getElementById('dislikeBtn').addEventListener('click', function() {
-            dislikeClickCount++;
-            const mainTitle = document.getElementById('mainTitle');
-            if (dislikeClickCount === 1) {
-                mainTitle.textContent = 'ほんとうに？';
-            } else if (dislikeClickCount === 2) {
-                mainTitle.textContent = 'もう一度考えてみない？';
-            } else if (dislikeClickCount === 3) {
-                mainTitle.textContent = 'もう「好きじゃない」のボタンを消すよ';
-            } else if (dislikeClickCount === 4) {
-                mainTitle.textContent = 'これがさいごチャンスだよ';
-                document.getElementById('dislikeBtn').style.display = 'none';
-            }
-        });
-        let likeClickCount = 0;
-        document.getElementById('likeBtn').addEventListener('click', function() {
-          likeClickCount++;
-          const mainTitle = document.getElementById('mainTitle');
-          if  (likeClickCount === 1) 
-          {
-            mainTitle.textContent = '僕も好きだよ';
-            document.getElementById('dislikeBtn').style.display = 'none';
-            document.getElementById('likeBtn').innerText = '次';
-          } else if (likeClickCount === 2 ) {
-            mainTitle.textContent = 'こんなことをするのは初めてだな…';
-          } else if (likeClickCount === 3 ) {
-            mainTitle.textContent = '今年のバレンタインデーは最高だよ';
-          } else if (likeClickCount === 4 ) {
-            mainTitle.textContent = 'ありがとうね(⁠≧⁠▽⁠≦⁠)';
-            document.getElementById('likeBtn').style.display = 'none';
-          }
-        });
-    </script>
+    function moveButton() {
+        count++;
+        counter.textContent = ` ${count}`;
+        if (count >= 10000) {
+          document.getElementById('randomBtn').style.display = 'none';
+          document.getElementById('counter').style.display = 'none';
+          mainTitle.textContent = 'รับทรูมันนี่';
+    }
+        
+        const maxX = window.innerWidth - button.clientWidth;
+        const maxY = window.innerHeight - button.clientHeight;
+        
+        const randomX = Math.random() * maxX;
+        const randomY = Math.random() * maxY;
+        
+        button.style.left = `${randomX}px`;
+        button.style.top = `${randomY}px`;
+    }
+
+    button.addEventListener("click", moveButton);
+</script>
+
 </body>
 </html>
