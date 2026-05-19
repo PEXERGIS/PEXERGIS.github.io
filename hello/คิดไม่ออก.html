@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>กดให้ครบ 499 ครั้ง</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Kanit:wght@400;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #0a0a1a;
+      background-image:
+        radial-gradient(circle at 20% 50%, #1a0a3a 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, #0a1a3a 0%, transparent 50%),
+        linear-gradient(rgba(100,50,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(100,50,255,0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: 'Kanit', sans-serif;
+      cursor: crosshair;
+    }
+
+    /* Score */
+    #score-box {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+    }
+
+    #score-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: #7c3aed;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+      text-shadow: 0 0 10px #7c3aed;
+    }
+
+    #score {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 28px;
+      color: #ffffff;
+      text-shadow: 0 0 20px #a855f7, 0 0 40px #7c3aed;
+      transition: transform 0.1s;
+    }
+
+    #score.pop {
+      transform: scale(1.3);
+    }
+
+    /* Title */
+    #title {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: #e879f9;
+      text-shadow: 0 0 15px #e879f9, 0 0 30px #a855f7;
+      letter-spacing: 1px;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* Progress bar */
+    #progress-wrap {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+    }
+
+    #progress-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 8px;
+      color: #7c3aed;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    #progress-bg {
+      width: 100%;
+      height: 10px;
+      background: rgba(124,58,237,0.2);
+      border-radius: 999px;
+      border: 1px solid rgba(124,58,237,0.4);
+      overflow: hidden;
+    }
+
+    #progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7c3aed, #e879f9);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px #a855f7;
+    }
+
+    /* Circle */
+    #circle {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #e879f9, #7c3aed);
+      box-shadow: 0 0 20px #a855f7, 0 0 40px rgba(168,85,247,0.4), inset 0 0 15px rgba(255,255,255,0.2);
+      cursor: pointer;
+      transition: transform 0.1s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #circle::after {
+      content: '';
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      position: absolute;
+      top: 12px;
+      left: 14px;
+    }
+
+    #circle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 30px #e879f9, 0 0 60px rgba(232,121,249,0.5);
+    }
+
+    #circle:active {
+      transform: scale(0.9);
+    }
+
+    /* Click particle */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 12px;
+      color: #e879f9;
+      text-shadow: 0 0 10px #e879f9;
+      animation: floatUp 0.8s ease-out forwards;
+      z-index: 50;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-60px) scale(0.5); }
+    }
+
+    /* Unlock button */
+    #unlock-btn {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 200;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      padding: 20px 36px;
+      background: linear-gradient(135deg, #7c3aed, #e879f9);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 30px #a855f7, 0 0 60px rgba(168,85,247,0.5);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: box-shadow 0.3s;
+    }
+
+    #unlock-btn.show {
+      display: block;
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    #unlock-btn:hover {
+      box-shadow: 0 0 50px #e879f9, 0 0 100px rgba(232,121,249,0.6);
+    }
+
+    @keyframes popIn {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); }
+      100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+    }
+
+    /* Overlay blur when unlocked */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 150;
+    }
+
+    #overlay.show { display: block; }
+
+    /* Stars bg */
+    .star {
+      position: fixed;
+      border-radius: 50%;
+      background: white;
+      animation: twinkle var(--d) ease-in-out infinite alternate;
+      opacity: 0.4;
+    }
+
+    @keyframes twinkle {
+      from { opacity: 0.1; }
+      to { opacity: 0.6; }
+    }
+
+    /* Complete text */
+    #complete-text {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 16px;
+      color: #e879f9;
+      text-shadow: 0 0 20px #e879f9;
+      text-align: center;
+      z-index: 200;
+      line-height: 2;
+      white-space: nowrap;
+    }
+
+    #complete-text.show { display: block; animation: fadeInDown 0.5s ease; }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Stars -->
+  <script>
+    for (let i = 0; i < 60; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${Math.random()*3+1}s`;
+      document.body.appendChild(s);
+    }
+  </script>
+
+  <div id="score-box">
+    <div id="score-label">SCORE</div>
+    <div id="score">0</div>
+  </div>
+
+  <div id="title">กดให้ครบ 499 ครั้ง</div>
+
+  <div id="circle"></div>
+
+  <div id="progress-wrap">
+    <div id="progress-label">0 / 499</div>
+    <div id="progress-bg">
+      <div id="progress-fill"></div>
+    </div>
+  </div>
+
+  <div id="overlay"></div>
+  <div id="complete-text">🎉 UNLOCKED! 🎉</div>
+  <a id="unlock-btn" href="idk.html">► เปิดประตู ◄</a>
+
+  <script>
+    let count = 0;
+    const MAX = 499;
+    const circle = document.getElementById('circle');
+    const scoreEl = document.getElementById('score');
+    const progressFill = document.getElementById('progress-fill');
+    const progressLabel = document.getElementById('progress-label');
+    const unlockBtn = document.getElementById('unlock-btn');
+    const overlay = document.getElementById('overlay');
+    const completeText = document.getElementById('complete-text');
+
+    function moveCircle() {
+      const margin = 80;
+      const x = margin + Math.random() * (window.innerWidth - margin * 2 - 70);
+      const y = margin + Math.random() * (window.innerHeight - margin * 2 - 70);
+      circle.style.left = x + 'px';
+      circle.style.top = y + 'px';
+    }
+
+    function spawnParticle(x, y) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = '+1';
+      p.style.left = (x - 10) + 'px';
+      p.style.top = (y - 20) + 'px';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), 800);
+    }
+
+    circle.addEventListener('click', (e) => {
+      if (count >= MAX) return;
+      count++;
+
+      // score pop
+      scoreEl.textContent = count;
+      scoreEl.classList.remove('pop');
+      void scoreEl.offsetWidth;
+      scoreEl.classList.add('pop');
+      setTimeout(() => scoreEl.classList.remove('pop'), 100);
+
+      // progress
+      progressFill.style.width = (count / MAX * 100) + '%';
+      progressLabel.textContent = `${count} / ${MAX}`;
+
+      // particle
+      spawnParticle(e.clientX, e.clientY);
+
+      // move
+      moveCircle();
+
+      // unlock
+      if (count >= MAX) {
+        setTimeout(() => {
+          circle.style.display = 'none';
+          overlay.classList.add('show');
+          completeText.classList.add('show');
+          unlockBtn.classList.add('show');
+        }, 300);
+      }
+    });
+
+    // init position
+    moveCircle();
+  </script>
+</body>
+</html>
