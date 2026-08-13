@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear A — อักษรที่ยังไร้เสียง</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Taviraj:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #E8E2D3;
+    --bg-alt: #DFD7C4;
+    --panel: #F1ECDF;
+    --ink: #262019;
+    --ink-soft: #55503f;
+    --aegean: #1E4E5F;
+    --aegean-deep: #123039;
+    --ochre: #A8752B;
+    --clay: #9C4A34;
+    --line: rgba(38,32,25,0.14);
+    --sidebar-w: 280px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Sarabun', sans-serif;
+    font-weight: 400;
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,.eyebrow,.nav-title{ font-family:'Taviraj','Sarabun',serif; }
+
+  a{ color: var(--aegean); }
+
+  /* ---------- layout shell ---------- */
+  .shell{
+    display:flex;
+    min-height:100vh;
+  }
+
+  /* ---------- sidebar ---------- */
+  .sidebar{
+    width: var(--sidebar-w);
+    flex-shrink:0;
+    background: var(--aegean-deep);
+    color: #EFE9D8;
+    padding: 40px 28px 32px;
+    position: sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+  .nav-title{
+    font-size: 1.55rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #F4EFE1;
+    margin:0 0 4px;
+  }
+  .nav-sub{
+    font-size: 0.82rem;
+    color: #B9C9CD;
+    letter-spacing: 0.06em;
+    margin:0 0 34px;
+  }
+  .nav-list{
+    list-style:none;
+    margin:0; padding:0;
+    border-top: 1px solid rgba(239,233,216,0.14);
+  }
+  .nav-list li{ border-bottom: 1px solid rgba(239,233,216,0.14); }
+  .nav-list button{
+    all: unset;
+    display:block;
+    width:100%;
+    padding: 13px 4px;
+    font-family:'Sarabun',sans-serif;
+    font-size: 0.95rem;
+    color: #D8D0BC;
+    cursor:pointer;
+    transition: color .15s ease, padding-left .15s ease;
+  }
+  .nav-list button .num{
+    font-family:'Taviraj',serif;
+    font-size: 0.78rem;
+    color: #7E9DA5;
+    margin-right: 10px;
+  }
+  .nav-list button:hover{ color:#fff; padding-left:8px; }
+  .nav-list li.active button{ color:#fff; font-weight:600; }
+  .nav-list li.active button .num{ color: var(--ochre); }
+
+  .sidebar-foot{
+    margin-top: 30px;
+    font-size: 0.76rem;
+    color: #829096;
+    line-height:1.7;
+  }
+
+  /* mobile toggle */
+  .menu-toggle{
+    display:none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 40;
+    background: var(--aegean-deep);
+    color:#fff;
+    border:none;
+    border-radius: 6px;
+    width:44px; height:44px;
+    font-size: 1.2rem;
+    cursor:pointer;
+  }
+
+  /* ---------- main ---------- */
+  main{
+    flex:1;
+    min-width:0;
+    padding: 64px 56px 90px;
+    max-width: 860px;
+  }
+
+  section.page{ display:none; }
+  section.page.active{ display:block; animation: fade .35s ease; }
+  @keyframes fade{ from{opacity:0; transform: translateY(6px);} to{opacity:1; transform:none;} }
+
+  .eyebrow{
+    display:inline-block;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    color: var(--ochre);
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  h1.page-title{
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin: 0 0 28px;
+    color: var(--aegean-deep);
+    line-height:1.3;
+  }
+
+  h2.sub{
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--aegean-deep);
+    margin: 42px 0 14px;
+  }
+
+  p{ margin: 0 0 18px; color: var(--ink); font-size: 1.03rem; }
+  p.lead{ font-size: 1.14rem; color: var(--ink-soft); }
+
+  .callout{
+    background: var(--panel);
+    border-left: 3px solid var(--aegean);
+    padding: 18px 22px;
+    border-radius: 4px;
+    margin: 24px 0;
+  }
+  .callout p{ margin:0; }
+  .callout.warn{ border-left-color: var(--clay); }
+
+  ul.plain{ padding-left: 1.3em; margin: 0 0 20px; }
+  ul.plain li{ margin-bottom: 8px; }
+
+  table.compare{
+    width:100%;
+    border-collapse: collapse;
+    margin: 20px 0 30px;
+    font-size: 0.97rem;
+    background: var(--panel);
+  }
+  table.compare th, table.compare td{
+    padding: 12px 16px;
+    text-align:left;
+    border-bottom: 1px solid var(--line);
+  }
+  table.compare thead th{
+    background: var(--aegean);
+    color: #fff;
+    font-weight: 500;
+    font-family:'Taviraj',serif;
+    letter-spacing:0.02em;
+  }
+  table.compare tbody tr:last-child td{ border-bottom:none; }
+  table.compare td.label{ color: var(--ink-soft); font-weight:500; width: 30%; }
+
+  .flow{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap: 10px;
+    margin: 28px 0;
+    font-family:'Taviraj',serif;
+  }
+  .flow .node{
+    background: var(--aegean-deep);
+    color:#fff;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  .flow .arrow{ color: var(--ochre); font-size:1.3rem; }
+
+  .badge{
+    display:inline-block;
+    font-family:'Sarabun',sans-serif;
+    font-size: 0.8rem;
+    font-weight:600;
+    letter-spacing: 0.04em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(156,74,52,0.13);
+    color: var(--clay);
+    margin-bottom: 18px;
+  }
+
+  code.translit{
+    background: var(--panel);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Sarabun', sans-serif;
+    color: var(--aegean-deep);
+    font-weight:600;
+  }
+
+  .page-nav-footer{
+    display:flex;
+    justify-content:space-between;
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .page-nav-footer button{
+    all:unset;
+    cursor:pointer;
+    color: var(--aegean);
+    font-family:'Sarabun',sans-serif;
+    font-size: 0.95rem;
+    font-weight:600;
+  }
+  .page-nav-footer button:hover{ text-decoration: underline; }
+  .page-nav-footer .end{ margin-left:auto; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 880px){
+    .sidebar{
+      position: fixed;
+      left:0; top:0;
+      transform: translateX(-100%);
+      z-index: 30;
+      transition: transform .25s ease;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.25);
+    }
+    .sidebar.open{ transform: translateX(0); }
+    .menu-toggle{ display:block; }
+    main{ padding: 90px 22px 70px; }
+    h1.page-title{ font-size: 2rem; }
+    .shell::before{
+      content:"";
+    }
+  }
+</style>
+</head>
+<body>
+
+<button class="menu-toggle" id="menuToggle" aria-label="เปิดเมนู">☰</button>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar">
+    <p class="nav-title">Linear A</p>
+    <p class="nav-sub">อักษรมิโนอันแห่งยุคสำริด</p>
+    <ul class="nav-list" id="navList">
+      <li data-target="intro" class="active"><button><span class="num">01</span>Linear A คืออะไร</button></li>
+      <li data-target="look"><button><span class="num">02</span>หน้าตาของตัวอักษร</button></li>
+      <li data-target="compare"><button><span class="num">03</span>เทียบกับ Linear B</button></li>
+      <li data-target="use"><button><span class="num">04</span>ใช้บันทึกอะไร</button></li>
+      <li data-target="why"><button><span class="num">05</span>ทำไมถอดรหัสไม่ได้</button></li>
+      <li data-target="read"><button><span class="num">06</span>อ่านได้แค่ไหน</button></li>
+      <li data-target="claims"><button><span class="num">07</span>มีใครถอดได้แล้วหรือยัง</button></li>
+      <li data-target="lineage"><button><span class="num">08</span>สายวิวัฒนาการของอักษร</button></li>
+      <li data-target="unicode"><button><span class="num">09</span>Linear A ใน Unicode</button></li>
+      <li data-target="summary"><button><span class="num">10</span>สรุป</button></li>
+    </ul>
+    <p class="sidebar-foot">เว็บให้ความรู้ทั่วไปเกี่ยวกับระบบการเขียนของอารยธรรมมิโนอัน อ้างอิงจากแหล่งข้อมูลวิชาการ เช่น Oxford Classical Dictionary และ Unicode Consortium</p>
+  </nav>
+
+  <main id="main">
+
+    <section class="page active" id="intro" data-title="Linear A คืออะไร">
+      <span class="eyebrow">01 — บทนำ</span>
+      <h1 class="page-title">Linear A คืออะไร?</h1>
+      <p class="lead">Linear A (อักษรลิเนียร์ เอ) เป็นระบบการเขียนที่ใช้ในยุคสำริด บนเกาะครีตและพื้นที่รอบทะเลอีเจียน ราว 1800–1450 ปีก่อนคริสตกาล ใช้โดยชาวมิโนอัน อารยธรรมสำคัญของภูมิภาคนี้</p>
+
+      <h2 class="sub">จุดสำคัญที่ควรรู้ก่อน</h2>
+      <p>นักวิชาการสามารถอ่านรูปร่างของสัญลักษณ์ Linear A ได้บางส่วนแล้ว แต่ยังไม่สามารถระบุความหมายของภาษามิโนอันที่อยู่เบื้องหลังได้อย่างแน่ชัด</p>
+
+      <div class="callout warn">
+        <p><strong>ดังนั้น Linear A จึงยังถือว่า "ยังไม่ถูกถอดรหัส" (undeciphered)</strong> ในวงการวิชาการปัจจุบัน — เป็นหนึ่งในปริศนาทางภาษาศาสตร์ที่เก่าแก่และคงค้างมาที่สุดของโลก</p>
+      </div>
+
+      <p>สิ่งที่ทำให้ Linear A น่าสนใจเป็นพิเศษคือ อักษรรุ่นหลังอย่าง Linear B ซึ่งมีรูปร่างคล้ายกันมาก กลับถูกถอดรหัสได้สำเร็จแล้วตั้งแต่ศตวรรษที่ 20 แต่ Linear A ที่มาก่อนกลับยังคงเป็นปริศนาอยู่จนถึงทุกวันนี้</p>
+
+      <div class="page-nav-footer">
+        <span></span>
+        <button class="end" data-next="look">หน้าตาของตัวอักษร →</button>
+      </div>
+    </section>
+
+    <section class="page" id="look" data-title="หน้าตาของตัวอักษร">
+      <span class="eyebrow">02 — โครงสร้างอักษร</span>
+      <h1 class="page-title">Linear A หน้าตาเป็นอย่างไร?</h1>
+      <p class="lead">Linear A ไม่ใช่ตัวอักษรแบบ A–Z ที่แต่ละตัวแทนเสียงเดี่ยว ๆ แต่จัดอยู่ในกลุ่ม "โลโก-พยางค์" (logo-syllabary) ซึ่งผสมสัญลักษณ์สามประเภทเข้าด้วยกัน</p>
+
+      <ul class="plain">
+        <li><strong>Syllabograms</strong> — สัญลักษณ์ที่แทนเสียงพยางค์</li>
+        <li><strong>Logograms / Ideograms</strong> — สัญลักษณ์ที่แทนสิ่งของหรือแนวคิดโดยตรง</li>
+        <li><strong>ตัวเลขและเศษส่วน</strong> — ใช้ในงานบันทึกบัญชี</li>
+      </ul>
+
+      <p>นักวิชาการสามารถเสนอค่าทางเสียงของสัญลักษณ์บางตัวได้ โดยอาศัยการเปรียบเทียบกับ Linear B ซึ่งถอดรหัสสำเร็จแล้ว แต่ต้องเข้าใจให้ชัดว่า การรู้ค่าเสียงของสัญลักษณ์ ไม่เท่ากับการรู้ความหมายของคำหรือภาษา Linear A</p>
+
+      <div class="page-nav-footer">
+        <button data-next="intro">← Linear A คืออะไร</button>
+        <button class="end" data-next="compare">เทียบกับ Linear B →</button>
+      </div>
+    </section>
+
+    <section class="page" id="compare" data-title="เทียบกับ Linear B">
+      <span class="eyebrow">03 — เปรียบเทียบ</span>
+      <h1 class="page-title">Linear A เกี่ยวข้องกับ Linear B อย่างไร?</h1>
+      <p class="lead">Linear B ถูกพัฒนาขึ้นภายหลัง และมีรูปร่างสัญลักษณ์จำนวนมากคล้ายกับ Linear A แต่ทั้งสองระบบมีความแตกต่างสำคัญที่ทำให้แปลข้ามกันตรง ๆ ไม่ได้</p>
+
+      <table class="compare">
+        <thead>
+          <tr><th></th><th>Linear A</th><th>Linear B</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="label">ช่วงเวลาโดยประมาณ</td><td>1800–1450 ปีก่อนคริสตกาล</td><td>หลังจากนั้น</td></tr>
+          <tr><td class="label">พื้นที่สำคัญ</td><td>เกาะครีต</td><td>ครีตและกรีซแผ่นดินใหญ่</td></tr>
+          <tr><td class="label">ภาษา</td><td>มิโนอัน — ยังไม่ทราบแน่ชัด</td><td>กรีกยุคไมซีเนียน</td></tr>
+          <tr><td class="label">ถอดรหัสแล้วหรือยัง</td><td>ยังไม่ได้</td><td>ถอดรหัสสำเร็จแล้ว</td></tr>
+          <tr><td class="label">ลักษณะอักษร</td><td>พยางค์ + logograms</td><td>พยางค์ + logograms</td></tr>
+        </tbody>
+      </table>
+
+      <p>Linear B ถูกถอดรหัสได้สำเร็จในศตวรรษที่ 20 และพบว่าภาษาที่บันทึกไว้คือภาษากรีกยุคไมซีเนียน แต่ปัญหาคือเราไม่สามารถนำค่าของ Linear B มาแปล Linear A ได้ตรง ๆ แม้สัญลักษณ์จะคล้ายกัน เพราะภาษาที่อยู่เบื้องหลังอักษรทั้งสองระบบอาจแตกต่างกันโดยสิ้นเชิง</p>
+
+      <div class="page-nav-footer">
+        <button data-next="look">← หน้าตาของตัวอักษร</button>
+        <button class="end" data-next="use">ใช้บันทึกอะไร →</button>
+      </div>
+    </section>
+
+    <section class="page" id="use" data-title="ใช้บันทึกอะไร">
+      <span class="eyebrow">04 — การใช้งาน</span>
+      <h1 class="page-title">Linear A ถูกใช้ทำอะไร?</h1>
+      <p class="lead">หลักฐานที่พบส่วนใหญ่เกี่ยวข้องกับการบริหารและกิจกรรมทางศาสนา ไม่ใช่งานวรรณกรรมหรือประวัติศาสตร์</p>
+
+      <ul class="plain">
+        <li>บันทึกสินค้าและจำนวนสิ่งของ</li>
+        <li>การเก็บและแจกจ่ายทรัพยากร</li>
+        <li>ชื่อบุคคลและชื่อสถานที่</li>
+        <li>สิ่งของที่เกี่ยวข้องกับพิธีกรรม</li>
+      </ul>
+
+      <p>จารึกที่พบปรากฏอยู่บนภาชนะ แผ่นดินเหนียว รวมถึงวัตถุโลหะและหิน โดย Oxford Classical Dictionary ระบุว่าหลักฐานส่วนใหญ่เป็นข้อความสั้น ๆ ที่มีรูปแบบค่อนข้างซ้ำกัน</p>
+
+      <div class="callout">
+        <p>ปัจจุบันยังไม่มีหลักฐานชัดเจนว่า Linear A เคยถูกใช้บันทึกงานประเภทมหากาพย์ ประวัติศาสตร์ หรือจดหมายทางการทูต แบบที่พบในอารยธรรมโบราณอื่น ๆ</p>
+      </div>
+
+      <div class="page-nav-footer">
+        <button data-next="compare">← เทียบกับ Linear B</button>
+        <button class="end" data-next="why">ทำไมถอดรหัสไม่ได้ →</button>
+      </div>
+    </section>
+
+    <section class="page" id="why" data-title="ทำไมถอดรหัสไม่ได้">
+      <span class="eyebrow">05 — หัวใจของปัญหา</span>
+      <h1 class="page-title">ทำไมถึงถอดรหัสไม่ได้?</h1>
+      <p class="lead">การถอดรหัส Linear A ติดปัญหาใหญ่อยู่สามข้อ ซึ่งแต่ละข้อเสริมกันจนทำให้งานนี้ยากขึ้นไปอีก</p>
+
+      <h2 class="sub">ปัญหาที่ 1 — ไม่มี "Rosetta Stone"</h2>
+      <p>ในกรณีของอียิปต์โบราณ เรามี Rosetta Stone ที่มีข้อความเดียวกันเขียนไว้หลายภาษา ทำให้จับคู่ความหมายกันได้ แต่ Linear A ยังไม่มีข้อความสองภาษาแบบนี้ที่จะใช้เป็นกุญแจไขรหัส</p>
+
+      <h2 class="sub">ปัญหาที่ 2 — ข้อความที่เหลืออยู่สั้นเกินไป</h2>
+      <p>ตัวอย่างจำนวนมากเป็นข้อความบัญชีสั้น ๆ ในรูปแบบ สัญลักษณ์ → จำนวน → สิ่งของ ทำให้มีข้อมูลด้านไวยากรณ์น้อยมาก Oxford ระบุว่าจำนวนข้อความที่หลงเหลือ สภาพที่เสียหาย และความสั้นของข้อความ เป็นอุปสรรคสำคัญต่อการทำความเข้าใจภาษา</p>
+
+      <h2 class="sub">ปัญหาที่ 3 — ไม่รู้ว่าภาษามิโนอันเป็นภาษาอะไร</h2>
+      <p>นี่อาจเป็นปัญหาใหญ่ที่สุด เรามั่นใจค่อนข้างมากว่า Linear A ใช้บันทึกภาษามิโนอัน แต่ยังไม่สามารถจัดภาษานี้เข้ากับตระกูลภาษาใดได้อย่างเป็นที่ยอมรับทั่วไป มีสมมติฐานหลายแบบที่ถูกเสนอ ได้แก่</p>
+      <ul class="plain">
+        <li>ภาษาที่เกี่ยวข้องกับกลุ่มภาษาในอนาโตเลีย</li>
+        <li>ภาษาในกลุ่มใกล้เคียงกับ Hurrian</li>
+        <li>ภาษาตระกูล Indo-European</li>
+        <li>ภาษาที่สูญหายไปแล้วโดยไม่มีทายาททางภาษา</li>
+        <li>หรือภาษาที่ไม่อาจจัดเข้าตระกูลภาษาใดที่รู้จักในปัจจุบัน</li>
+      </ul>
+      <p>แต่จนถึงตอนนี้ยังไม่มีข้อสรุปใดที่วงการวิชาการยอมรับโดยทั่วไป</p>
+
+      <div class="page-nav-footer">
+        <button data-next="use">← ใช้บันทึกอะไร</button>
+        <button class="end" data-next="read">อ่านได้แค่ไหน →</button>
+      </div>
+    </section>
+
+    <section class="page" id="read" data-title="อ่านได้แค่ไหน">
+      <span class="eyebrow">06 — สถานะปัจจุบัน</span>
+      <h1 class="page-title">แล้วนักวิชาการ "อ่าน" Linear A ได้ไหม?</h1>
+      <p class="lead">คำตอบคือได้บางส่วน แต่ต้องแยกคำว่า "อ่าน" กับ "แปล" ออกจากกันให้ชัดเจน</p>
+
+      <p>นักวิชาการสามารถทำ transliteration หรือถอดสัญลักษณ์ออกมาเป็นชุดอักษรละตินตามค่าเสียงที่สันนิษฐานไว้ได้ เช่น สัญลักษณ์ชุดหนึ่งอาจถอดเสียงออกมาได้เป็น <code class="translit">a-ka-u-ta</code></p>
+
+      <p>แต่นั่นไม่ได้แปลว่าเรารู้ว่า <code class="translit">a-ka-u-ta</code> หมายความว่าอะไร เพราะเรายังไม่รู้จักภาษามิโนอันมากพอที่จะแปลความหมายได้</p>
+
+      <div class="callout">
+        <p>สถานะโดยสรุปคือ: <strong>รู้รูปสัญลักษณ์ → รู้ค่าเสียงบางตัว → อ่านออกเสียงได้โดยประมาณ → แต่ยังไม่รู้ความหมายทั้งหมด</strong></p>
+      </div>
+
+      <p>ความแตกต่างระหว่างการ "อ่านออกเสียง" กับการ "เข้าใจความหมาย" นี้เป็นจุดที่มักถูกเข้าใจผิดมากที่สุดเวลาพูดถึง Linear A</p>
+
+      <div class="page-nav-footer">
+        <button data-next="why">← ทำไมถอดรหัสไม่ได้</button>
+        <button class="end" data-next="claims">มีใครถอดได้แล้วหรือยัง →</button>
+      </div>
+    </section>
+
+    <section class="page" id="claims" data-title="มีใครถอดได้แล้วหรือยัง">
+      <span class="eyebrow">07 — ข้อควรระวัง</span>
+      <h1 class="page-title">มีคนอ้างว่าถอดรหัส Linear A ได้แล้วหรือยัง?</h1>
+      <span class="badge">ควรอ่านอย่างระมัดระวัง</span>
+      <p class="lead">มีนักวิจัยและผู้เขียนบางรายเสนอว่าตนเองสามารถถอดรหัส Linear A ได้แล้ว เช่น แนวทางที่เชื่อมโยงภาษามิโนอันเข้ากับกลุ่มภาษา Hurrian</p>
+
+      <p>แต่การมีงานที่ "อ้างว่าถอดรหัสได้แล้ว" ไม่ได้แปลว่าปัญหาถูกแก้ไขแล้วในระดับที่วงการวิชาการยอมรับ ตัวอย่างเช่น Oxford Classical Dictionary ซึ่งเป็นแหล่งอ้างอิงวิชาการ ยังคงจัด Linear A ไว้ในสถานะ undeciphered อยู่</p>
+
+      <div class="callout warn">
+        <p>หากต้องการเขียนถึงเรื่องนี้อย่างถูกต้อง ควรใช้ประโยคว่า <strong>"Linear A ยังไม่ได้รับการถอดรหัสอย่างเป็นที่ยอมรับในวงการวิชาการ"</strong> ซึ่งแม่นยำกว่าการพูดว่า "ไม่มีใครอ่าน Linear A ได้เลย"</p>
+      </div>
+
+      <div class="page-nav-footer">
+        <button data-next="read">← อ่านได้แค่ไหน</button>
+        <button class="end" data-next="lineage">สายวิวัฒนาการของอักษร →</button>
+      </div>
+    </section>
+
+    <section class="page" id="lineage" data-title="สายวิวัฒนาการของอักษร">
+      <span class="eyebrow">08 — ที่มาของอักษร</span>
+      <h1 class="page-title">Linear A กับ Cretan Hieroglyphic</h1>
+      <p class="lead">ก่อนจะมี Linear A เกาะครีตเคยมีระบบการเขียนอีกแบบหนึ่งมาก่อน เรียกว่า Cretan Hieroglyphic หรืออักษรเฮียโรกลิฟิกแห่งครีต</p>
+
+      <div class="flow">
+        <span class="node">Cretan Hieroglyphic</span>
+        <span class="arrow">→</span>
+        <span class="node">Linear A</span>
+        <span class="arrow">→</span>
+        <span class="node">Linear B</span>
+      </div>
+
+      <p>ลำดับนี้เป็นภาพคร่าว ๆ เท่านั้น ความสัมพันธ์ทางประวัติศาสตร์และการพัฒนาที่แท้จริงระหว่างระบบการเขียนทั้งสามยังเป็นหัวข้อที่นักวิชาการศึกษาอยู่ ไม่ควรตีความว่าเป็นการวิวัฒนาการแบบเส้นตรงง่าย ๆ</p>
+
+      <div class="page-nav-footer">
+        <button data-next="claims">← มีใครถอดได้แล้วหรือยัง</button>
+        <button class="end" data-next="unicode">Linear A ใน Unicode →</button>
+      </div>
+    </section>
+
+    <section class="page" id="unicode" data-title="Linear A ใน Unicode">
+      <span class="eyebrow">09 — ในโลกดิจิทัล</span>
+      <h1 class="page-title">Linear A มีอยู่ใน Unicode ไหม?</h1>
+      <p class="lead">มี — ตั้งแต่ Unicode รุ่นใหม่ ๆ ได้กำหนดช่วงรหัสสำหรับ Linear A ไว้โดยเฉพาะ ที่ตำแหน่ง U+10600 ถึง U+1077F</p>
+
+      <p>Unicode ระบุว่า Linear A ถูกใช้งานในช่วงราว 1700–1450 ปีก่อนคริสตกาล และมีการเข้ารหัสสัญลักษณ์ตามระบบจัดหมวดหมู่ที่นักวิชาการใช้ เช่นระบบ GORILA</p>
+
+      <div class="callout">
+        <p>ที่น่าสนใจคือ ในทางคอมพิวเตอร์เราสามารถพิมพ์อักษร Linear A ได้จริงแล้วในปัจจุบัน แม้ว่าภาษาที่อักษรนี้ใช้บันทึกจะยังไม่ถูกถอดความอย่างสมบูรณ์ก็ตาม</p>
+      </div>
+
+      <div class="page-nav-footer">
+        <button data-next="lineage">← สายวิวัฒนาการของอักษร</button>
+        <button class="end" data-next="summary">สรุป →</button>
+      </div>
+    </section>
+
+    <section class="page" id="summary" data-title="สรุป">
+      <span class="eyebrow">10 — สรุปแบบสั้น</span>
+      <h1 class="page-title">สรุป: Linear A คือปริศนาที่ยังรอคำตอบ</h1>
+      <p class="lead">Linear A คือระบบอักษรของอารยธรรมมิโนอัน ใช้งานในช่วง 1800–1450 ปีก่อนคริสตกาล บนเกาะครีต</p>
+
+      <div class="flow">
+        <span class="node">มิโนอัน ครีต</span>
+        <span class="arrow">→</span>
+        <span class="node">Linear A</span>
+        <span class="arrow">→</span>
+        <span class="node">บันทึกสินค้า / บริหาร / ศาสนา</span>
+      </div>
+
+      <p>ภาษาที่ถูกบันทึกไว้ในอักษรนี้คือภาษามิโนอัน ซึ่งจนถึงวันนี้ยังไม่มีใครทราบแน่ชัดว่าสัมพันธ์กับตระกูลภาษาใด ทำให้ Linear A ยังคงสถานะ "ยังไม่ถูกถอดรหัส" อย่างเป็นทางการในวงการวิชาการ</p>
+
+      <p>สิ่งที่ทำให้เรื่องนี้น่าสนใจเป็นพิเศษคือ Linear B ซึ่งมีรูปร่างตัวอักษรคล้ายกันและเกิดขึ้นภายหลัง กลับถูกถอดรหัสสำเร็จไปแล้วตั้งแต่ศตวรรษที่ 20 ขณะที่ Linear A ผู้เป็นต้นทางกลับยังคงเป็นปริศนาที่รอคำตอบอยู่จนถึงทุกวันนี้</p>
+
+      <div class="page-nav-footer">
+        <button data-next="unicode">← Linear A ใน Unicode</button>
+        <button class="end" data-next="intro">กลับไปเริ่มต้นใหม่ →</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const navList = document.getElementById('navList');
+  const pages = document.querySelectorAll('section.page');
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menuToggle');
+
+  function showPage(id){
+    pages.forEach(p => p.classList.toggle('active', p.id === id));
+    navList.querySelectorAll('li').forEach(li => li.classList.toggle('active', li.dataset.target === id));
+    window.scrollTo({top:0, behavior:'instant' in window ? 'auto' : 'auto'});
+    document.getElementById('main').scrollTop = 0;
+    window.location.hash = id;
+    sidebar.classList.remove('open');
+  }
+
+  navList.querySelectorAll('li').forEach(li => {
+    li.querySelector('button').addEventListener('click', () => showPage(li.dataset.target));
+  });
+
+  document.querySelectorAll('[data-next]').forEach(btn => {
+    btn.addEventListener('click', () => showPage(btn.dataset.next));
+  });
+
+  menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+
+  const initial = window.location.hash.replace('#','');
+  if(initial && document.getElementById(initial)){
+    showPage(initial);
+  }
+</script>
+
+</body>
+</html>
